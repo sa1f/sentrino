@@ -1,6 +1,9 @@
 import cv2
+import serial
+
 
 camera = cv2.VideoCapture(0)
+ser = serial.Serial('dev/ttyACM0', 9600)
 minArea = 5000
 firstFrame = None 
 
