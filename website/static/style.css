@@ -55,7 +55,7 @@ h1 {
   background: white;
   position:relative;
   background: white url();
-  background-size: cover;
+  background-size: cover; !important
 }
 
 #up, #down, #right, #left {
@@ -68,7 +68,7 @@ h1 {
   vertical-align: middle;
   line-height: 20vh;
   font-size: 4em;
-  color: rgba(0,0,0,.1);
+  color: rgba(0,0,0,.2);
   cursor: pointer;
    -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none;   /* Chrome/Safari/Opera */
