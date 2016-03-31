@@ -47,13 +47,13 @@ class VideoCamera(object):
                     if currArea > maxArea:
                         maxArea = currArea
                         maxContour = c
-                        print currArea
+                        #print currArea
     
             if maxContour != None:
                 (x, y, w, h) = cv2.boundingRect(maxContour)
                 cv2.rectangle(frame, (x, y), (x + w, y +  h), (0, 255, 0), 2)
 
                 
-        image = cv2.resize(frame, None, fx=0.2, fy=0.2)
+        image = cv2.resize(frame, (100, 67))
         ret, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tostring()
