@@ -15,6 +15,9 @@
 # 3. Navigate the browser to the local webpage.
 from flask import Flask, render_template, Response
 from camera import VideoCamera
+import serial
+
+# ser = serial.Serial('/dev/ttyACM0', 9600)
 
 app = Flask(__name__)
 
@@ -33,7 +36,21 @@ def video_feed():
     return Response(gen(VideoCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
+@app.route('/move/<direction>')
+def move(direction):
+    '''
+    if direction == 'up':
+        ser.write('u')
+    elif direction == 'down':
+        ser.write('d')
+    elif direction == 'right':
+        ser.write('r')
+    elif direction == 'left':
+        ser.write('l')
+    '''
+
+
 if __name__ == '__main__':
     app.debug = True
-    app.run()
-    #app.run(host='0.0.0.0', debug=True)
+    #app.run()
+    app.run(host='localhost', debug=True)

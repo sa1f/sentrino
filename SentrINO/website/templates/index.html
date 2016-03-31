@@ -1,10 +1,45 @@
 <html>
   <head>
     <title>Sentrino</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <script src="static/mousetrap.min.js"></script>
   </head>
   <body>
     <h1>Sentrino Stream</h1>
-    <img id="bg" src="{{ url_for('video_feed') }}">
+    <!--<img id="bg" src="{{ url_for('video_feed') }}">-->
+    <!--<img id="stream">-->
+    <div id="controls">
+      <div onclick="left()" id="left">←</div>
+      <div onclick="up()" id="up">↑</div>
+      <div onclick="down()" id="down">↓</div>
+      <div onclick="right()" id="right">→</div>
+    </div>
+
+    <script>
+      var xhr = new XMLHttpRequest();
+
+      up = function() {
+        xhr.open("GET", "http://localhost:5000/move/up", false);
+        xhr.send(null);
+      }
+      down = function() {
+        xhr.open("GET", "http://localhost:5000/move/down", false);
+        xhr.send(null);
+      }
+      right = function() {
+        xhr.open("GET", "http://localhost:5000/move/right", false);
+        xhr.send(null);
+      }
+      left = function() {
+        xhr.open("GET", "http://localhost:5000/move/left", false);
+        xhr.send(null);
+      }
+
+      Mousetrap.bind('up', up);
+      Mousetrap.bind('down', down);
+      Mousetrap.bind('right', right);
+      Mousetrap.bind('left', left);
+    </script>
   </body>
 </html>
+
