@@ -8,7 +8,7 @@ ser = serial.Serial('/dev/ttyACM0', 9600)
 minArea = 5000
 frameArea = 15000
 firstFrame = None
-timeDelay = 50
+timeDelay = 150
 currTime = int(round(time.time() * 1000))
 
 try:
@@ -54,25 +54,24 @@ try:
 
                 x_mid = x + 0.5*w
                 y_mid = y + 0.5*h
-
-                if (x_mid < width/2):
-                    ser.write('l')
-
-                if (x_mid > width/2):
-                    ser.write('r')
-                '''
-                if (y_mid > height/2):
-                    ser.write('d')
-                
-                if (y_mid < height/2):
-                    ser.write('u')
-                '''        
+                if (width/2 > x+w) or (width/2 < x):
+                    if (x_mid < width/2):
+                        ser.write('l')
+                    elif (x_mid > width/2):
+                        ser.write('r')
+                    
+                if (height/2 > y+h) or (height/2 < y):
+                    if (y_mid > height/2):
+                        ser.write('d')
+                    elif (y_mid < height/2):
+                        ser.write('u')
+                        
             currTime = int(round(time.time() * 1000))                
 
 
         cv2.imshow("Input", frame)
         cv2.imshow("Threshold", thresh)
-        cv2.imshow("Frame Delta", frameDelta)
+        #cv2.imshow("Frame Delta", frameDelta)
         key = cv2.waitKey(10) & 0xFF
 
         if key == ord("q"):
