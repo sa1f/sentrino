@@ -15,7 +15,7 @@ Servo myservoud;
 
 int poslr;
 int posud;
-char action;
+int action;
 int next;
 
 void setup() {
@@ -29,49 +29,53 @@ void setup() {
 
 void loop() {
   poslr = myservolr.read();
-  posud = myservoud.read(); 
-  action = Serial.read();
-  next = Serial.peek();
-  if (isDigit(next)) { 
-    next = Serial.read();
-  }
-  else {
-    next = 1;
-  }
-  switch (action) {
-    case 'l': rotateLeft(poslr, 3*next); break;
-    case 'r': rotateRight(poslr, 3*next); break;
-    case 'u': panUp(posud, 3*next); break;
-    case 'd': panDown(posud, 3*next); break;
-     
+  posud = myservoud.read();
+  if (Serial.available()){ 
+    action = Serial.read();
+    /*
+    next = Serial.peek();
+    if (isDigit(next)) { 
+      next = Serial.read();
+    }  
+    else {
+      next = 1;
+    }
+    */
+    switch (action) {
+      case 'l': rotateLeft(poslr); break;
+      case 'r': rotateRight(poslr); break;
+      case 'u': panUp(posud); break;
+      case 'd': panDown(posud); break;
+       
+    }
   }
 }
 
-void rotateLeft(int poslr, int next) {
-  if (poslr+next <= 180) 
-    myservolr.write((poslr+next));
+void rotateLeft(int poslr) {
+  if (poslr+3 <= 180) 
+    myservolr.write((poslr+3));
   else 
     myservolr.write(180);
 }
 
-void rotateRight(int poslr, int next) {
-  if (poslr-next >= 0) 
-    myservolr.write((poslr-next));
+void rotateRight(int poslr) {
+  if (poslr-3 >= 0) 
+    myservolr.write((poslr-3));
   else
     myservolr.write(0);
 }
 
 
-void panUp(int posud, int next) {
-  if (posud-next >= 0)
-    myservoud.write((posud-next));
+void panUp(int posud) {
+  if (posud-3 >= 0)
+    myservoud.write((posud-3));
   else
     myservoud.write(0);
 }
 
-void panDown(int posud, int next) {
-  if (posud+next <= 180)
-    myservoud.write((posud+next));
+void panDown(int posud) {
+  if (posud+3 <= 180)
+    myservoud.write((posud+3));
   else
     myservoud.write(180);
 }

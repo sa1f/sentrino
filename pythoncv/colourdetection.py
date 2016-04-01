@@ -1,13 +1,19 @@
 import cv2
 import numpy
 
+#Initialize the camera
 camera = cv2.VideoCapture(0)
+
+#Color threshold definitions
 redLow_HSV = numpy.array([0, 150, 122])
 redHigh_HSV = numpy.array([57, 255, 255])
 greenLow_HSV = numpy.array([57,131,0])
 greenHigh_HSV = numpy.array([101, 255, 255])
+
+#Minimum contour area
 minArea = 5000
 
+#Calibration Variables
 calibration = False
 h_low = 0
 h_high = 0
@@ -19,6 +25,7 @@ v_high = 255
 def updateValues(x):
     pass
 
+#Calibration Window creation
 if calibration: 
     cv2.namedWindow("Calibration")
     cv2.createTrackbar("H_l", "Calibration", 0, 179, updateValues)
@@ -35,12 +42,15 @@ if calibration:
 try:
     while True:
 
+        #Gets image from camera
         (grabbed, frame) = camera.read()
         if not grabbed:
             break
         
+        #Converts to HSV colorspace
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         
+        #Updates values if calibrating
         if calibration:
             h_low = cv2.getTrackbarPos("H_l", "Calibration")
             h_high = cv2.getTrackbarPos("H_h", "Calibration")
@@ -52,15 +62,18 @@ try:
             high = numpy.array([h_high, s_high, v_high])
             mask = cv2.inRange(hsv, low, high)
 
+        #Red and Green filtered to binary images
         redBinary = cv2.inRange(hsv, redLow_HSV, redHigh_HSV)
         greenBinary = cv2.inRange(hsv, greenLow_HSV, greenHigh_HSV)
 
+        #Contours found
         (redCnts, _) = cv2.findContours(redBinary.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         (greenCnts, _) = cv2.findContours(greenBinary.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         maxArea = 0
         maxRedContour = None
 
+        #Finds the maximum in contours
         for c in redCnts:
             currArea = cv2.contourArea(c)
             if currArea > minArea:
