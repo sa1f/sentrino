@@ -19,7 +19,7 @@ redLow_HSV = numpy.array([0, 150, 122])
 redHigh_HSV = numpy.array([57, 255, 255])
 greenLow_HSV = numpy.array([57,131,0])
 greenHigh_HSV = numpy.array([101, 255, 255])
-minArea = 5000
+minArea = 1000
 
 #For calibration purposes needs streamlining
 calibration = False
@@ -71,7 +71,9 @@ try:
             mask = cv2.inRange(hsv, low, high)
 
         #Filter the binary images for each color (Only Red currently)
-        redBinary = cv2.inRange(hsv, redLow_HSV, redHigh_HSV)
+	redBinary = cv2.inRange(hsv, redLow_HSV, redHigh_HSV)
+        redBinary = cv2.GaussianBlur(redBinary, (21,21), 0)
+
         #greenBinary = cv2.inRange(hsv, greenLow_HSV, greenHigh_HSV)
 
         (redCnts, _) = cv2.findContours(redBinary.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -147,7 +149,7 @@ try:
         #Displays the image on a window
         #cv2.imshow("hsv", hsv)
         cv2.imshow("input", frame)
-        #cv2.imshow("mask", mask)
+        cv2.imshow("redBinary", redBinary)
 
         #If 'q' is pressed then quit the program
         key = cv2.waitKey(1) & 0xFF

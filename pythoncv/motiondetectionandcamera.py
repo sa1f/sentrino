@@ -11,19 +11,20 @@ camera = cv2.VideoCapture(0)
 ser = serial.Serial('/dev/ttyACM0', 9600)
 
 #Sets up working variables
-minArea = 5000
-frameArea = 15000
+minArea = 1000
+frameArea = 10000
 firstFrame = None
-timeDelay = 600
-degree = 12
+timeDelay = 500 
+degree = 9
 currTime = int(round(time.time() * 1000))
 
 try:
     while True:
-        (grabbed, frame) = camera.read()
+        (grabbed, rawInput) = camera.read()
         if not grabbed:
-            break
-
+            continue
+	
+	frame = cv2.resize(rawInput, (480, 320)) 
         height, width, channel = frame.shape
 
         if (frameArea == None):
@@ -31,12 +32,12 @@ try:
             print frameArea
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        #gray = cv2.GaussianBlur(gray, (21, 21), 0)
+        gray = cv2.GaussianBlur(gray, (21, 21), 0)
 
         #Needs two images to compare
         if firstFrame is None:
             firstFrame = gray
-            time.sleep(0.1)
+            #time.sleep(0.4)
             continue
         
         #Process the two images and find the differences
@@ -56,10 +57,10 @@ try:
                 if currArea > maxArea:
                     maxArea = currArea
                     maxContour = c
-        '''
+        
         if (maxArea != 0):            
             print maxArea
-        '''
+        
 
         #Sends a message to the arduino to control camera direction (Needs fine tuning)
         if ((currTime + timeDelay) < int(round(time.time() * 1000))):
@@ -125,7 +126,7 @@ try:
         cv2.imshow("Input", frame)
         cv2.imshow("Threshold", thresh)
         #cv2.imshow("Frame Delta", frameDelta)
-        key = cv2.waitKey(10) & 0xFF
+        key = cv2.waitKey(1) & 0xFF
 
         if key == ord("q"):
             break
