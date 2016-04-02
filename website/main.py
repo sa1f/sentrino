@@ -36,19 +36,6 @@ def video_feed():
     return Response(gen(VideoCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/move/<direction>')
-def move(direction):
-    if direction == 'up':
-        ser.write('u')
-    elif direction == 'down':
-        ser.write('d')
-    elif direction == 'right':
-        ser.write('r')
-    elif direction == 'left':
-        ser.write('l')
-    return direction
-
-
 if __name__ == '__main__':
     app.debug = True
     #app.run()
