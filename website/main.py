@@ -4,6 +4,7 @@ from camera import VideoCamera
 import requests
 import json
 import os.path
+import time
 
 app = Flask(__name__)
 
@@ -40,8 +41,16 @@ def video_feed():
 
 @app.route('/alert/<msg>')
 def alert(msg):
+    if msg == 'enemy':
+        msg = "Enemy detected at " + time.strftime("%Y-%M-%d %H:%M:%S") + ". Snapshot saved in videos folder"
     info['message'] = msg
     print requests.get('https://voip.ms/api/v1/rest.php', params=info).text
+    f = open('saved/text', 'w')
+    f.write(msg)
+    f.close
+    return "Successful"
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
