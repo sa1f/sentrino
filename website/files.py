@@ -8,5 +8,5 @@ app = Flask(__name__)
 AutoIndex(app, browse_root=os.path.curdir + "/saved")
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
 
