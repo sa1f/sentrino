@@ -16,23 +16,24 @@
       <div onclick="right()" id="right">→</div>
     </div>
 
+
     <script>
       var xhr = new XMLHttpRequest();
 
       up = function() {
-        xhr.open("GET", "http://192.168.43.179:5001/move/up", false);
+        xhr.open("GET", "http://localhost:5001/move/up", false);
         xhr.send(null);
       }
       down = function() {
-        xhr.open("GET", "http://192.168.43.179:5001/move/down", false);
+        xhr.open("GET", "http://localhost:5001/move/down", false);
         xhr.send(null);
       }
       right = function() {
-        xhr.open("GET", "http://192.168.43.179:5001/move/right", false);
+        xhr.open("GET", "http://localhost:5001/move/right", false);
         xhr.send(null);
       }
       left = function() {
-        xhr.open("GET", "http://192.168.43.179:5001/move/left", false);
+        xhr.open("GET", "http://localhost:5001/move/left", false);
         xhr.send(null);
       }
 
