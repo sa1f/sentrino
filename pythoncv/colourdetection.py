@@ -22,6 +22,7 @@ s_high = 179
 v_low = 255
 v_high = 255
 
+
 def updateValues(x):
     pass
 
@@ -107,7 +108,6 @@ try:
             cv2.putText(frame, "ENEMY ALERT", (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255))
         elif maxGreenContour != None:
             cv2.putText(frame, "HELLO FRIEND", (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0))
-
 
         #(cnts, _) = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 

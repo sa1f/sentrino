@@ -2,6 +2,7 @@
 ELEC 291 - Project 2 - Group 5A
 Analyes color from a moving camera and sends commands
 to follow the color
+Also records a video
 '''
 
 
@@ -12,7 +13,8 @@ import time
 
 #Initializes the camera and serial output to Arduino
 camera = cv2.VideoCapture(0)
-ser = serial.Serial('/dev/ttyACM0', 9600)
+recorder = None
+#ser = serial.Serial('/dev/ttyACM0', 9600)
 
 #Color detection threshold
 redLow_HSV = numpy.array([0, 150, 122])
@@ -71,13 +73,13 @@ try:
             mask = cv2.inRange(hsv, low, high)
 
         #Filter the binary images for each color (Only Red currently)
-	redBinary = cv2.inRange(hsv, redLow_HSV, redHigh_HSV)
-        redBinary = cv2.GaussianBlur(redBinary, (21,21), 0)
+        redBinary = cv2.inRange(hsv, redLow_HSV, redHigh_HSV)
+        #redBinary = cv2.GaussianBlur(redBinary, (21,21), 0)
 
-        #greenBinary = cv2.inRange(hsv, greenLow_HSV, greenHigh_HSV)
+        greenBinary = cv2.inRange(hsv, greenLow_HSV, greenHigh_HSV)
 
         (redCnts, _) = cv2.findContours(redBinary.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        #(greenCnts, _) = cv2.findContours(greenBinary.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        (greenCnts, _) = cv2.findContours(greenBinary.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         maxArea = 0
         maxRedContour = None
@@ -91,7 +93,7 @@ try:
         if maxArea != 0:
             print maxArea
 
-        '''
+        
         #Find the largest green object
         maxGreenContour = None
         maxArea = 0
@@ -103,10 +105,14 @@ try:
                 maxGreenContour = c
         if maxArea != 0:
             print maxArea
-        '''
+        
         
         #Image dimensions
         height, width, channels = frame.shape
+
+        if (recorder == None):
+            recorder = cv2.VideoWriter('video.avi', -1, 10, (width, height))
+            print "Recorder Initialized"
 
         #Commands to control the Arduino
         if ((currTime + timeDelay) < int(round(time.time() * 1000))):
@@ -114,6 +120,7 @@ try:
                 (x, y, w, h) = cv2.boundingRect(maxRedContour)
                 cv2.rectangle(frame, (x, y), (x + w, y +  h), (0, 0, 255), 2)
                 
+                '''
                 x_mid = x + 0.5*w
                 y_mid = y + 0.5*h
 
@@ -131,29 +138,31 @@ try:
                         ser.write('d')
                     elif (y_mid < height/2):
                         ser.write('u')
-                
+                '''
             currTime = int(round(time.time() * 1000))
 
-        '''
+        
         if maxGreenContour != None:
             (x, y, w, h) = cv2.boundingRect(maxGreenContour)
             cv2.rectangle(frame, (x, y), (x + w, y +  h), (0, 255, 0), 2)
-        '''
+        
         if maxRedContour != None:
             cv2.putText(frame, "ENEMY ALERT", (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255))
-        '''
+        
         elif maxGreenContour != None:
             cv2.putText(frame, "HELLO FRIEND", (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0))
-        '''
+        
 
         #Displays the image on a window
         #cv2.imshow("hsv", hsv)
         cv2.imshow("input", frame)
         cv2.imshow("redBinary", redBinary)
-
+        recorder.write(frame)
         #If 'q' is pressed then quit the program
         key = cv2.waitKey(1) & 0xFF
         if key == ord("q"):
+            recorder.release()
+            print "Recorder released"
             break
 finally:
     camera.release()
