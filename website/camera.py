@@ -133,7 +133,7 @@ class VideoCamera(object):
                 elif (y_mid < height/2):
                     print requests.get('http://localhost:5001/automove/up')
             '''
-            self.enemyLastSeen = millis()
+            self.enemyLastSeen = self.millis()
         else:
             if (self.enemyLastSeen + self.enemyOnScreenTime < self.millis()):
                 self.enemyDetected = False
