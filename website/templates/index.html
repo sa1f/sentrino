@@ -8,13 +8,15 @@
     <h1>Sentrino Stream</h1>
     <!--<img id="bg" src="{{ url_for('video_feed') }}">-->
     <!--<img id="stream">-->
-    <div id="controls" style="background: url('{{ url_for('video_feed') }}'); background-size: cover">
+    <div id="controls" style="background: url('http://localhost:5003/video_feed/'); background-size: cover">
     <!--<div id="controls" >-->
       <div onclick="left()" id="left">←</div>
       <div onclick="up()" id="up">↑</div>
       <div onclick="down()" id="down">↓</div>
       <div onclick="right()" id="right">→</div>
     </div>
+
+    <a target="_blank" href="http://localhost:5002/">Saved videos and Snapshots</a>
 
 
     <script>

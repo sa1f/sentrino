@@ -1,0 +1,42 @@
+* Connect wifi, camera, speaker, power to raspberry pi
+* Connect servos, lcd, keypad to arduino
+* On power up, the, raspberry pi automatically connects to the network
+* Create a log file in saved folder
+* Have a saved folder
+* Bash start.sh script starts all necessary scripts.todo
+	* pip install Flask-AutoIndex	
+	* pip install pyttsx
+
+	* Video Processing Script script
+		* Moving objects get tracking box
+		* Enemy/Friendly objects get tracking box precedence (That is, ignore other moving objects)
+		* Should automatically track moving objects in the following order: Enemy > Friendly > Moving Object
+			* Send Requests to Arduino Control script
+		* **Should have a function that provides a scaled down jpeg (As in campera.py in the website folder) with all tracking boxes/graphical overlays**
+		* If enemy object is detected (on screen for more than 2s)
+			* Start a video recording (filename has date+time), save in videos folder
+			* Send text alert
+				* Make a request to Website Script
+			* Save a snapshot 
+			* Send alert to Arduino Control Script
+
+	* Video Feed Script @done(2016-04-03)
+		* Flask powered mjpeg Video Feed on port 5000, grabs frames from Video Processing script @done(2016-04-03)
+
+	* Arduino Control Script on port 5001 @done(2016-04-03)
+		* Handles manual / auto mode @done(2016-04-03)
+		* handles moving the webcam requests @done(2016-04-03)
+		* Handles speaker alerts @done(2016-04-03)
+			* Sound alert on speaker, prompt for code @done(2016-04-03)
+			* If code not entered in 15 seconds, shoot laser (sound) @done(2016-04-03)
+
+	* File Server Script serves up videos/snapshots on port 5002 @done(2016-04-02)
+
+	* Website Script @done(2016-04-03)
+		* Shows Video Feed @done(2016-04-02)
+		* Has Manual controls + Switch to manual controls button @done(2016-04-03)
+			* Arrow Keys + Buttons @done(2016-04-03)
+		* Has link to videos/snapshots folder @done(2016-04-03)
+		* Has event log @done(2016-04-03)
+		* Handle requests for text alert @done(2016-04-03)
+

@@ -3,6 +3,7 @@ from flask import Flask, render_template, Response
 import serial
 import time
 import threading
+import pyttsx
 
 ser = serial.Serial('/dev/ttyACM0', 9600)
 
@@ -14,6 +15,24 @@ def manualMode():
     auto = False
     time.sleep(30)
     auto = True
+
+def speaker(msg):
+    engine = pyttsx.init()
+    engine.say(msg)
+    engine.startLoop()
+    engine.endLoop()
+
+def ard():
+    ser.write('a')
+    while True:
+        if ser.readLine() == '1234':
+            msg = "Welcome"
+            thread = threading.Thread(target=speaker, args=([msg]))
+            thread.start()
+        else:
+            msg = "Pew Pew"
+            thread = threading.Thread(target=speaker, args=([msg]))
+            thread.start()
 
 @app.route('/move/<direction>')
 def move(direction):
@@ -46,6 +65,15 @@ def move(direction):
         elif direction == 'left':
             ser.write('l')
         return direction
+
+@app.route('/speakeralert/<msg>')
+def speakeralert(msg):
+    thread = threading.Thread(target=speaker, args=([msg]))
+    thread.start()
+
+    ardThread = threading.Thread(target=ard)
+    ardThread.start()
+    return msg
 
 if __name__ == '__main__':
     app.debug = True
