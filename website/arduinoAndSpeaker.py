@@ -22,6 +22,17 @@ def speaker(msg):
     engine.startLoop()
     engine.endLoop()
 
+def ard():
+    ser.write('a')
+    while True:
+        if ser.readLine() == '1234':
+            msg = "Welcome"
+            thread = threading.Thread(target=speaker, args=([msg]))
+            thread.start()
+        else:
+            msg = "Pew Pew"
+            thread = threading.Thread(target=speaker, args=([msg]))
+            thread.start()
 
 @app.route('/move/<direction>')
 def move(direction):
@@ -59,6 +70,9 @@ def move(direction):
 def speakeralert(msg):
     thread = threading.Thread(target=speaker, args=([msg]))
     thread.start()
+
+    ardThread = threading.Thread(target=ard)
+    ardThread.start()
     return msg
 
 if __name__ == '__main__':
