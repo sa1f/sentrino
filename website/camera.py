@@ -13,19 +13,24 @@ class VideoCamera(object):
         # self.video = cv2.VideoCapture(0)
         # If you decide to use video.mp4, you must have this file in the folder
         # as the main.py.
+        
+        #The camera capturing object
         self.video = cv2.VideoCapture(0)
+
+        #Color Detection Constants
         self.minArea = 1000
         self.redLow_HSV = numpy.array([0, 150, 122])
         self.redHigh_HSV = numpy.array([57, 255, 255])
         self.greenLow_HSV = numpy.array([57,131,0])
         self.greenHigh_HSV = numpy.array([101, 255, 255])
         
+        #Enemy Recording Variables
         self.enemyDetected = False
         self.enemyOnScreenTime = 2000
         self.record = False
         self.enemyTimeTracker = None
-        
         self.recorder = None
+        self.enemyLastSeen = 0
         
     def __del__(self):
         self.video.release()
@@ -128,9 +133,11 @@ class VideoCamera(object):
                 elif (y_mid < height/2):
                     print requests.get('http://localhost:5001/automove/up')
             '''
+            self.enemyLastSeen = self.millis()
         else:
-            self.enemyDetected = False
-            self.record = False
+            if (self.enemyLastSeen + self.enemyOnScreenTime < self.millis()):
+                self.enemyDetected = False
+                self.record = False
 
 
         #Text
