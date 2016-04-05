@@ -119,10 +119,10 @@ void setup() {
 void loop() {
   if (Serial.available()){ 
     switch (Serial.read()) {
-      case 'l': turnServo(yaw, false, 2); break;
-      case 'r': turnServo(yaw, true, 2); break;
-      case 'u': turnServo(pitch, true, 1); break;
-      case 'd': turnServo(pitch, false, 1); break;
+      case 'l': turnServo(yaw, false, 5); break;
+      case 'r': turnServo(yaw, true, 5); break;
+      case 'u': turnServo(pitch, true, 2); break;
+      case 'd': turnServo(pitch, false, 2); break;
       case 'a': alarmIsOn = true; break;
     }
   } 
