@@ -114,7 +114,9 @@ class VideoCamera(object):
                     self.record = True
                     #Send alert of an enemy
                     request="http://192.168.43.179:5001/alert/enemy"
+                    request2="http://192.168.43.179:5000/alert/enemy"
                     threading.Thread(target=makerequest, args=([request])).start()
+                    threading.Thread(target=makerequest, args=([request2])).start()
                     #requests.get('http://192.168.43.179:5000/alert/enemy')
             else:
                 self.enemyDetected = True
