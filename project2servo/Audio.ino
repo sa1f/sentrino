@@ -18,10 +18,10 @@ const int gH = 784;
 const int gSH = 830;
 const int aH = 880;
 
-const int PIEZO_PIN = 11; // Digital Pin 8
+//const int PIEZO_PIN = 11; // Digital Pin 8
 
 void audio_setup(){
-  pinMode(PIEZO_PIN, OUTPUT); // Digital Pin 8
+   // Digital Pin 8
 }
 
 void audio_loop(){
