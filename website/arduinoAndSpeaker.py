@@ -54,7 +54,7 @@ def move(direction):
     return direction
 
 @app.route('/automove/<direction>')
-def move(direction):
+def automove(direction):
     if auto:
         if direction == 'up':
             ser.write('u')
