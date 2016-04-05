@@ -11,6 +11,8 @@ Servo pitch;  //ASSIGNED PIN 10 : For controlling up-down movement
 const int CENTER_MOST = 90;
 const int RIGHT_MOST = 0;
 const int LEFT_MOST = 180;
+const int YAW_SERVO = 10;
+const int PITCH_SERVO = 9;
 
 
 const int KEY_BUFFER_SIZE = 16;
@@ -38,6 +40,7 @@ Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
    @param motorStep - How much to degree to rotate
 */
 void turnServo(Servo servo, bool clockwise, int motorStep = 1) {
+  
   int pos = servo.read();
 
   if (clockwise) {
@@ -102,11 +105,11 @@ void keypadEvent(KeypadEvent key) {
    Set-ups required before the main loop
 */
 void setup() {
-  //Serial.begin(9600);
+  Serial.begin(9600);
   screen.begin(16, 2);
   
-  yaw.attach(9);
-  pitch.attach(10);
+  yaw.attach(YAW_SERVO);
+  pitch.attach(PITCH_SERVO);
   
   yaw.write(CENTER_MOST);
   pitch.write(CENTER_MOST);
