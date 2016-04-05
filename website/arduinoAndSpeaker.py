@@ -24,6 +24,7 @@ def speaker(msg):
 
 def ard():
     ser.write('a')
+    '''
     while True:
         if ser.readLine() == '1234':
             msg = "Welcome"
@@ -33,7 +34,7 @@ def ard():
             msg = "Pew Pew"
             thread = threading.Thread(target=speaker, args=([msg]))
             thread.start()
-
+    '''
 @app.route('/move/<direction>')
 def move(direction):
 
@@ -66,7 +67,7 @@ def automove(direction):
             ser.write('l')
         return direction
 
-@app.route('/speakeralert/<msg>')
+@app.route('/alert/<msg>')
 def speakeralert(msg):
     thread = threading.Thread(target=speaker, args=([msg]))
     thread.start()
