@@ -2,6 +2,11 @@ import cv2
 import numpy
 import requests
 import time
+import threading
+
+
+def makerequest(request):
+    requests.get(request)
 
 
 class VideoCamera(object):
@@ -19,8 +24,8 @@ class VideoCamera(object):
 
         #Color Detection Constants
         self.minArea = 1000
-        self.redLow_HSV = numpy.array([0, 150, 122])
-        self.redHigh_HSV = numpy.array([57, 255, 255])
+        self.redLow_HSV = numpy.array([0, 178, 0])
+        self.redHigh_HSV = numpy.array([9, 255, 255])
         self.greenLow_HSV = numpy.array([57,131,0])
         self.greenHigh_HSV = numpy.array([101, 255, 255])
         
@@ -39,6 +44,7 @@ class VideoCamera(object):
     def millis():
         return int(round(time.time() * 1000))
     
+
     def get_frame(self):
 
         # We are using Motion JPEG, but OpenCV defaults to capture raw images,
@@ -104,6 +110,10 @@ class VideoCamera(object):
                 if ((self.enemyTimeTracker + self.enemyOnScreenTime) < self.millis()) and not self.record:
                     print "Starting Record"
                     self.record = True
+                    #Send alert of an enemy
+                    request="http://localhost:5000/alert/enemy"
+                    threading.Thread(target=makerequest, args=([request])).start()
+                    #requests.get('http://localhost:5000/alert/enemy')
             else:
                 self.enemyDetected = True
                 self.enemyTimeTracker = self.millis()
@@ -111,9 +121,7 @@ class VideoCamera(object):
             (x, y, w, h) = cv2.boundingRect(maxRedContour)
             cv2.rectangle(frame, (x, y), (x + w, y +  h), (0, 0, 255), 2)
 
-            '''
-            #Send alert of an enemy
-            print requests.get('http://localhost:5000/alert/enemy')
+            
             
             x_mid = x + 0.5*w
             y_mid = y + 0.5*h
@@ -122,17 +130,25 @@ class VideoCamera(object):
             if (width/2 > x+w) or (width/2 < x):
 
                 if (x_mid < width/2):
-                    print requests.get('http://localhost:5001/automove/left')
+                    request="http://localhost:5001/automove/left"
+                    threading.Thread(target=makerequest, args=([request])).start()
+                    #print requests.get('http://localhost:5001/automove/left')
                 elif (x_mid > width/2):
-                    print requests.get('http://localhost:5001/automove/right')
+                    request="http://localhost:5001/automove/right"
+                    threading.Thread(target=makerequest, args=([request])).start()
+                    #print requests.get('http://localhost:5001/automove/right')
             
             #Moves camera up or down
             if (height/2 > y+h) or (height/2 < y):
                 if (y_mid > height/2):
-                    print requests.get('http://localhost:5001/automove/down')
+                    request="http://localhost:5001/automove/down"
+                    threading.Thread(target=makerequest, args=([request])).start()
+                    #print requests.get('http://localhost:5001/automove/down')
                 elif (y_mid < height/2):
-                    print requests.get('http://localhost:5001/automove/up')
-            '''
+                    request="http://localhost:5001/automove/up"
+                    threading.Thread(target=makerequest, args=([request])).start()
+                    #print requests.get('http://localhost:5001/automove/up')
+            
             self.enemyLastSeen = self.millis()
         else:
             if (self.enemyLastSeen + self.enemyOnScreenTime < self.millis()):
@@ -147,6 +163,7 @@ class VideoCamera(object):
         elif maxGreenContour != None:
             cv2.putText(frame, "FRIEND", (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 10)
 
+        '''
         if (self.record):
             if (self.recorder == None):
                 print "Initialized recorder"
@@ -163,7 +180,7 @@ class VideoCamera(object):
                 print "Finished"
                 self.recorder.release()
                 self.recorder = None
-
+        '''
         image = cv2.resize(frame, (100, 67))
         ret, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tostring()

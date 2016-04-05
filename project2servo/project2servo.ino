@@ -11,6 +11,7 @@ Servo pitch;  //ASSIGNED PIN 10 : For controlling up-down movement
 const int CENTER_MOST = 90;
 const int RIGHT_MOST = 0;
 const int LEFT_MOST = 180;
+
 /*
 const int KEY_BUFFER_SIZE = 5;
 char keyBuffer[KEY_BUFFER_SIZE];
@@ -102,11 +103,10 @@ void keypadEvent(KeypadEvent key) {
 void setup() {
   Serial.begin(9600);
   screen.begin(16, 2);
-  //audio_setup();
-
+  
   yaw.attach(9);
   pitch.attach(10);
-
+  
   yaw.write(CENTER_MOST);
   pitch.write(CENTER_MOST);
 
@@ -118,20 +118,18 @@ void setup() {
    The main loop of our program
 */
 void loop() {
-  /*if (Serial.available()){
+  if (Serial.available()){ 
     switch (Serial.read()) {
-      case 'l': turnServo(yaw, true, 3); break;
-      case 'r': turnServo(yaw, false, 3); break;
-      case 'u': turnServo(pitch, true, 3); break;
-      case 'd': turnServo(pitch, false, 3); break;
+      case 'l': turnServo(yaw, false, 2); break;
+      case 'r': turnServo(yaw, true, 2); break;
+      case 'u': turnServo(pitch, true, 1); break;
+      case 'd': turnServo(pitch, false, 1); break;
     }
-    }*/
+  }
   testLoop();  
   /*char key = keypad.getKey();
   if (key != NULL) {
     keypadEvent(key);
   }*/
-  
-
 }
 

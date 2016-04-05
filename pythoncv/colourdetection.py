@@ -9,12 +9,14 @@ redLow_HSV = numpy.array([0, 150, 122])
 redHigh_HSV = numpy.array([57, 255, 255])
 greenLow_HSV = numpy.array([57,131,0])
 greenHigh_HSV = numpy.array([101, 255, 255])
+low = numpy.array([0,0,0])
+high = numpy.array([10,10,10])
 
 #Minimum contour area
 minArea = 5000
 
 #Calibration Variables
-calibration = False
+calibration = True
 h_low = 0
 h_high = 0
 s_low = 0
@@ -62,11 +64,11 @@ try:
             low = numpy.array([h_low, s_low, v_low])
             high = numpy.array([h_high, s_high, v_high])
             mask = cv2.inRange(hsv, low, high)
-
+        
         #Red and Green filtered to binary images
         redBinary = cv2.inRange(hsv, redLow_HSV, redHigh_HSV)
         greenBinary = cv2.inRange(hsv, greenLow_HSV, greenHigh_HSV)
-
+        mask = cv2.inRange(hsv, low, high)
         #Contours found
         (redCnts, _) = cv2.findContours(redBinary.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         (greenCnts, _) = cv2.findContours(greenBinary.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -113,7 +115,7 @@ try:
 
         #cv2.imshow("hsv", hsv)
         cv2.imshow("input", frame)
-        #cv2.imshow("mask", mask)
+        cv2.imshow("mask", mask)
 
        
         key = cv2.waitKey(1) & 0xFF
