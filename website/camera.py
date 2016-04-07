@@ -55,7 +55,7 @@ class VideoCamera(object):
             if grabbed:
                 break
 
-	frame = cv2.resize(frame, (320, 240))
+		frame = cv2.resize(frame, (320, 240))
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
