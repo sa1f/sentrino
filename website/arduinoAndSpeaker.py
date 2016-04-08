@@ -1,14 +1,20 @@
 #!/usr/bin/env python
+'''
+This file allows the Pi to talk to the Arduino
+'''
+
 from flask import Flask, render_template, Response
 import serial
 import time
 import threading
 import pyttsx
 
-ser = serial.Serial('/dev/ttyACM1', 9600)
+#The serial connection to the Arduino
+ser = serial.Serial('/dev/ttyACM0', 9600)
 
 app = Flask(__name__)
 
+#Manual mode and autonomous mode change
 auto = True
 def manualMode():
     global auto
@@ -16,12 +22,14 @@ def manualMode():
     time.sleep(30)
     auto = True
 
+#Default text to speech
 def speaker(msg):
     engine = pyttsx.init()
     engine.say(msg)
     engine.startLoop()
     engine.endLoop()
 
+#Text to speech is sent with a set speech rate
 def speaking(msg):
     engine = pyttsx.init()
     engine.say(msg)
@@ -29,19 +37,12 @@ def speaking(msg):
     engine.startLoop()
     engine.endLoop()
 
+#Alarm character is sent
 def ard():
     ser.write('a')
-    '''
-    while True:
-        if ser.readLine() == '1234':
-            msg = "Welcome"
-            thread = threading.Thread(target=speaker, args=([msg]))
-            thread.start()
-        else:
-            msg = "Pew Pew"
-            thread = threading.Thread(target=speaker, args=([msg]))
-            thread.start()
-    '''
+
+
+#Manual Control Mode
 @app.route('/move/<direction>')
 def move(direction):
 
@@ -61,6 +62,7 @@ def move(direction):
         ser.write('l')
     return direction
 
+#Autonomous Control Mode
 @app.route('/automove/<direction>')
 def automove(direction):
     if auto:
@@ -74,11 +76,14 @@ def automove(direction):
             ser.write('l')
         return direction
 
+#Speaker message
 @app.route('/speak/<msg>')
 def speakthis(msg):
     thread = threading.Thread(target=speaking, args=([msg]))
     thread.start()
     return "hi"
+
+#Alarm initializer
 @app.route('/alert/<msg>')
 def speakeralert(msg):
     thread = threading.Thread(target=speaker, args=([msg]))

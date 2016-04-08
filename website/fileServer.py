@@ -1,3 +1,7 @@
+'''
+Creates a file server for the recorded videos
+'''
+
 #!/usr/bin/python
 
 import os.path

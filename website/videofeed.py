@@ -1,4 +1,9 @@
 #!/usr/bin/python
+'''
+Creates the videofeed that takes frames from the camera
+Reference: https://github.com/log0/video_streaming_with_flask_example
+'''
+
 from flask import Flask, render_template, Response
 from camera import VideoCamera
 
