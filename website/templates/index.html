@@ -6,7 +6,7 @@
   </head>
   <body>
     <h1>Sentrino Stream</h1>
-    <div id="controls" style="background: url('http://localhost:5003/video_feed'); background-size: cover">
+    <div id="controls" style="background: url('http://192.168.43.179:5003/video_feed'); background-size: cover">
     <!--<div id="controls" >-->
       <div onclick="left()" id="left">←</div>
       <div onclick="up()" id="up">↑</div>
@@ -14,27 +14,36 @@
       <div onclick="right()" id="right">→</div>
     </div>
 
-    <a target="_blank" href="http://localhost:5002/">Saved videos and Snapshots</a>
+    <a target="_blank" href="http://192.168.43.179:5002/">Saved videos and Snapshots</a>
+    Message: <input id='msg' type='text' name='msg'><br>
+    <input onclick='msg()' type='submit' value='submit'>
 
 
     <script>
       var xhr = new XMLHttpRequest();
 
       up = function() {
-        xhr.open("GET", "http://localhost:5001/move/up", false);
+        xhr.open("GET", "http://192.168.43.179:5001/move/up", false);
         xhr.send(null);
       }
       down = function() {
-        xhr.open("GET", "http://localhost:5001/move/down", false);
+        xhr.open("GET", "http://192.168.43.179:5001/move/down", false);
         xhr.send(null);
       }
       right = function() {
-        xhr.open("GET", "http://localhost:5001/move/right", false);
+        xhr.open("GET", "http://192.168.43.179:5001/move/right", false);
         xhr.send(null);
       }
       left = function() {
-        xhr.open("GET", "http://localhost:5001/move/left", false);
+        xhr.open("GET", "http://192.168.43.179:5001/move/left", false);
         xhr.send(null);
+      }
+
+      msg = function() {
+        message = document.getElementById('msg').value
+        xhr.open("GET", "http://192.168.43.179:5001/speak/" + message, false);
+        xhr.send(null);
+
       }
 
       Mousetrap.bind('up', up);

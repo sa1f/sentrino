@@ -5,7 +5,7 @@ import time
 import threading
 import pyttsx
 
-ser = serial.Serial('/dev/ttyACM0', 9600)
+ser = serial.Serial('/dev/ttyACM1', 9600)
 
 app = Flask(__name__)
 
@@ -22,8 +22,16 @@ def speaker(msg):
     engine.startLoop()
     engine.endLoop()
 
+def speaking(msg):
+    engine = pyttsx.init()
+    engine.say(msg)
+    engine.setProperty("rate", 30)
+    engine.startLoop()
+    engine.endLoop()
+
 def ard():
     ser.write('a')
+    '''
     while True:
         if ser.readLine() == '1234':
             msg = "Welcome"
@@ -33,7 +41,7 @@ def ard():
             msg = "Pew Pew"
             thread = threading.Thread(target=speaker, args=([msg]))
             thread.start()
-
+    '''
 @app.route('/move/<direction>')
 def move(direction):
 
@@ -66,7 +74,12 @@ def automove(direction):
             ser.write('l')
         return direction
 
-@app.route('/speakeralert/<msg>')
+@app.route('/speak/<msg>')
+def speakthis(msg):
+    thread = threading.Thread(target=speaking, args=([msg]))
+    thread.start()
+    return "hi"
+@app.route('/alert/<msg>')
 def speakeralert(msg):
     thread = threading.Thread(target=speaker, args=([msg]))
     thread.start()
@@ -76,6 +89,4 @@ def speakeralert(msg):
     return msg
 
 if __name__ == '__main__':
-    app.debug = True
-    #app.run()
-    app.run(host='0.0.0.0',port=5001, debug=True)
+    app.run(host='0.0.0.0',port=5001)

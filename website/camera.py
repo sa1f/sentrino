@@ -18,17 +18,17 @@ class VideoCamera(object):
         # self.video = cv2.VideoCapture(0)
         # If you decide to use video.mp4, you must have this file in the folder
         # as the main.py.
-        
+
         #The camera capturing object
         self.video = cv2.VideoCapture(0)
 
         #Color Detection Constants
-        self.minArea = 1000
+        self.minArea = 3000
         self.redLow_HSV = numpy.array([0, 178, 0])
         self.redHigh_HSV = numpy.array([9, 255, 255])
         self.greenLow_HSV = numpy.array([57,131,0])
         self.greenHigh_HSV = numpy.array([101, 255, 255])
-        
+
         #Enemy Recording Variables
         self.enemyDetected = False
         self.enemyOnScreenTime = 2000
@@ -36,14 +36,14 @@ class VideoCamera(object):
         self.enemyTimeTracker = None
         self.recorder = None
         self.enemyLastSeen = 0
-        
+
     def __del__(self):
         self.video.release()
 
     @staticmethod
     def millis():
         return int(round(time.time() * 1000))
-    
+
 
     def get_frame(self):
 
@@ -53,7 +53,9 @@ class VideoCamera(object):
         while True:
             (grabbed, frame) = self.video.read()
             if grabbed:
-                break            
+                break
+
+        frame = cv2.resize(frame, (320, 240))
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -111,18 +113,20 @@ class VideoCamera(object):
                     print "Starting Record"
                     self.record = True
                     #Send alert of an enemy
-                    request="http://localhost:5000/alert/enemy"
+                    request="http://192.168.43.179:5001/alert/enemy"
+                    request2="http://192.168.43.179:5000/alert/enemy"
                     threading.Thread(target=makerequest, args=([request])).start()
-                    #requests.get('http://localhost:5000/alert/enemy')
+                    threading.Thread(target=makerequest, args=([request2])).start()
+                    #requests.get('http://192.168.43.179:5000/alert/enemy')
             else:
                 self.enemyDetected = True
                 self.enemyTimeTracker = self.millis()
-            
+
             (x, y, w, h) = cv2.boundingRect(maxRedContour)
             cv2.rectangle(frame, (x, y), (x + w, y +  h), (0, 0, 255), 2)
 
-            
-            
+
+
             x_mid = x + 0.5*w
             y_mid = y + 0.5*h
 
@@ -130,25 +134,25 @@ class VideoCamera(object):
             if (width/2 > x+w) or (width/2 < x):
 
                 if (x_mid < width/2):
-                    request="http://localhost:5001/automove/left"
+                    request="http://192.168.43.179:5001/automove/left"
                     threading.Thread(target=makerequest, args=([request])).start()
-                    #print requests.get('http://localhost:5001/automove/left')
+                    #print requests.get('http://192.168.43.179:5001/automove/left')
                 elif (x_mid > width/2):
-                    request="http://localhost:5001/automove/right"
+                    request="http://192.168.43.179:5001/automove/right"
                     threading.Thread(target=makerequest, args=([request])).start()
-                    #print requests.get('http://localhost:5001/automove/right')
-            
+                    #print requests.get('http://192.168.43.179:5001/automove/right')
+
             #Moves camera up or down
             if (height/2 > y+h) or (height/2 < y):
                 if (y_mid > height/2):
-                    request="http://localhost:5001/automove/down"
+                    request="http://192.168.43.179:5001/automove/down"
                     threading.Thread(target=makerequest, args=([request])).start()
-                    #print requests.get('http://localhost:5001/automove/down')
+                    #print requests.get('http://192.168.43.179:5001/automove/down')
                 elif (y_mid < height/2):
-                    request="http://localhost:5001/automove/up"
+                    request="http://192.168.43.179:5001/automove/up"
                     threading.Thread(target=makerequest, args=([request])).start()
-                    #print requests.get('http://localhost:5001/automove/up')
-            
+                    #print requests.get('http://192.168.43.179:5001/automove/up')
+
             self.enemyLastSeen = self.millis()
         else:
             if (self.enemyLastSeen + self.enemyOnScreenTime < self.millis()):
@@ -159,15 +163,14 @@ class VideoCamera(object):
         #Text
         if maxRedContour != None:
             cv2.putText(frame, "ENEMY", (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 10)
-        
+
         elif maxGreenContour != None:
             cv2.putText(frame, "FRIEND", (0, height - 10), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 10)
 
-        '''
         if (self.record):
             if (self.recorder == None):
                 print "Initialized recorder"
-                
+
                 filename = 'saved/' + time.strftime("%Y-%b-%d-%H_%M_%S.avi", time.localtime())
 
                 print "File saved as: " + filename
@@ -180,7 +183,6 @@ class VideoCamera(object):
                 print "Finished"
                 self.recorder.release()
                 self.recorder = None
-        '''
         image = cv2.resize(frame, (100, 67))
         ret, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tostring()
@@ -234,12 +236,12 @@ class VideoCamera(object):
                         maxArea = currArea
                         maxContour = c
                         #print currArea
-    
+
             if maxContour != None:
                 (x, y, w, h) = cv2.boundingRect(maxContour)
                 cv2.rectangle(frame, (x, y), (x + w, y +  h), (0, 255, 0), 2)
 
-                
+
         image = cv2.resize(frame, (100, 67))
         ret, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tostring()
